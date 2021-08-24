@@ -1,11 +1,11 @@
 package br.com.rvigo.accessmanager;
 
+import br.com.rvigo.accessmanager.dtos.UserDTO;
 import br.com.rvigo.accessmanager.entities.User;
 import br.com.rvigo.accessmanager.security.entities.Jwt;
-import br.com.rvigo.accessmanager.services.UserService;
-import br.com.rvigo.accessmanager.dtos.UserDTO;
 import br.com.rvigo.accessmanager.security.services.AuthService;
 import br.com.rvigo.accessmanager.security.services.JwtTokenService;
+import br.com.rvigo.accessmanager.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -39,10 +39,11 @@ public class AuthServiceTest {
         userDTO.setUsername("test");
         userDTO.setId(userId);
         userDTO.setPassword("test");
+        String key = "AVERYVERYLONGSTRINGTOMATCHNEEDEDBITSFORTHEHS512ALGORITHMACCORDINGTOJWTJWASPECIFIATION(RFC7518SECTION3.2)";
 
         user = new User(userDTO);
 
-        jwtTokenService = new JwtTokenService();
+        jwtTokenService = new JwtTokenService(30000L, key);
         userAuthService = new AuthService(userService, jwtTokenService, encoder);
     }
 
@@ -50,7 +51,6 @@ public class AuthServiceTest {
     public void shouldAuthenticateAnUser() {
         Mockito.when(userService.findUserByUsername(Mockito.anyString())).thenReturn(Optional.ofNullable(user));
         Mockito.when(encoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-
         Jwt jwt = userAuthService.authenticateUser(userDTO);
 
         assertNotNull(jwt);

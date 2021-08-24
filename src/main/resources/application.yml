@@ -1,5 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: ${MONGODB_URI}
+      uri:
       database: ${DATABASE_NAME}
+secret-key: ${SECRET_KEY}
+token-expiration-ms: 30000
