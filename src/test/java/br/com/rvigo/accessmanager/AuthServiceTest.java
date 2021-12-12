@@ -2,7 +2,7 @@ package br.com.rvigo.accessmanager;
 
 import br.com.rvigo.accessmanager.dtos.UserDTO;
 import br.com.rvigo.accessmanager.entities.User;
-import br.com.rvigo.accessmanager.security.entities.Jwt;
+import br.com.rvigo.accessmanager.security.dtos.AccessTokenDTO;
 import br.com.rvigo.accessmanager.security.services.AuthService;
 import br.com.rvigo.accessmanager.security.services.JwtTokenService;
 import br.com.rvigo.accessmanager.services.UserService;
@@ -51,7 +51,7 @@ public class AuthServiceTest {
     public void shouldAuthenticateAnUser() {
         Mockito.when(userService.findUserByUsername(Mockito.anyString())).thenReturn(Optional.ofNullable(user));
         Mockito.when(encoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-        Jwt jwt = userAuthService.authenticateUser(userDTO);
+        AccessTokenDTO jwt = userAuthService.authenticateUser(userDTO);
 
         assertNotNull(jwt);
         assertNotNull(jwt.getJwtToken());

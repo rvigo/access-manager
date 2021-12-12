@@ -1,6 +1,7 @@
 package br.com.rvigo.accessmanager.entities;
 
 import br.com.rvigo.accessmanager.dtos.UserDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.springframework.data.annotation.Id;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 @Document
+@Schema(hidden = true)
 public class User implements UserDetails {
     @Id
     @EqualsAndHashCode.Include

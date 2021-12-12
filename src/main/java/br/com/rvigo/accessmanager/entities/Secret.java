@@ -1,6 +1,7 @@
 package br.com.rvigo.accessmanager.entities;
 
 import br.com.rvigo.accessmanager.dtos.SecretDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @Document
+@Schema(hidden = true)
 public class Secret {
     @Id
     @EqualsAndHashCode.Include

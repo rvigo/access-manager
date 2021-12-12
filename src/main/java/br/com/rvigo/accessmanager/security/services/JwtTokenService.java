@@ -1,7 +1,7 @@
 package br.com.rvigo.accessmanager.security.services;
 
 import br.com.rvigo.accessmanager.entities.User;
-import br.com.rvigo.accessmanager.security.entities.Jwt;
+import br.com.rvigo.accessmanager.security.dtos.AccessTokenDTO;
 import br.com.rvigo.accessmanager.security.exceptions.JwtTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -40,7 +40,7 @@ public class JwtTokenService {
         return UUID.fromString(claims.getSubject());
     }
 
-    public Jwt generateToken(User user) {
+    public AccessTokenDTO generateToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getId().toString());
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
         if (!authorities.isEmpty()) {
@@ -59,7 +59,7 @@ public class JwtTokenService {
                 .signWith(getSecretKey(), DEFAULT_SIGNATURE_ALGORITHM)
                 .compact();
 
-        return new Jwt(token, tokenExpiration);
+        return new AccessTokenDTO(token, tokenExpiration);
     }
 
     public Boolean validateToken(String token, User user) {

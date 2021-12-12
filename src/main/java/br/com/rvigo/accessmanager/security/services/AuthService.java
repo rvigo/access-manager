@@ -1,7 +1,7 @@
 package br.com.rvigo.accessmanager.security.services;
 
 import br.com.rvigo.accessmanager.entities.User;
-import br.com.rvigo.accessmanager.security.entities.Jwt;
+import br.com.rvigo.accessmanager.security.dtos.AccessTokenDTO;
 import br.com.rvigo.accessmanager.services.UserService;
 import br.com.rvigo.accessmanager.dtos.UserDTO;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ public class AuthService {
     private JwtTokenService jwtTokenService;
     private BCryptPasswordEncoder encoder;
 
-    public Jwt authenticateUser(UserDTO userDTO) {
+    public AccessTokenDTO authenticateUser(UserDTO userDTO) {
 
         User storedUser = userService.findUserByUsername(userDTO.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));

@@ -5,3 +5,11 @@ spring:
       database: ${DATABASE_NAME}
 secret-key: ${SECRET_KEY}
 token-expiration-ms: 30000
+management:
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  packages-to-exclude: br.com.rvigo.accessmanager.entities.*
+  packages-to-scan: br.com.rvigo.accessmanager.controllers
