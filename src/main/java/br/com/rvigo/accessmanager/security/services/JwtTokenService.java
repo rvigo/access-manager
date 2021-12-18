@@ -79,8 +79,6 @@ public class JwtTokenService {
             log.error("Invalid JWT token");
         } catch (ExpiredJwtException e) {
             log.error("Expired JWT token");
-        } catch (SecurityException e) {
-            log.error("Invalid JWT signature");
         } catch (UnsupportedJwtException e) {
             log.error("Unsupported JWT token");
         } catch (IllegalArgumentException e) {

@@ -51,6 +51,7 @@ public class AuthServiceTest {
     public void shouldAuthenticateAnUser() {
         when(userService.findUserByUsername(Mockito.anyString())).thenReturn(user);
         when(encoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+
         Jwt jwt = userAuthService.authenticateUser(userDTO);
 
         assertNotNull(jwt);
