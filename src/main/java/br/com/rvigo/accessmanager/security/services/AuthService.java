@@ -1,12 +1,12 @@
 package br.com.rvigo.accessmanager.security.services;
 
+import br.com.rvigo.accessmanager.dtos.UserDTO;
 import br.com.rvigo.accessmanager.entities.User;
 import br.com.rvigo.accessmanager.security.entities.Jwt;
+import br.com.rvigo.accessmanager.security.exceptions.BadCredentialsException;
 import br.com.rvigo.accessmanager.services.UserService;
-import br.com.rvigo.accessmanager.dtos.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,7 @@ public class AuthService {
     private BCryptPasswordEncoder encoder;
 
     public Jwt authenticateUser(UserDTO userDTO) {
-
-        User storedUser = userService.findUserByUsername(userDTO.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        User storedUser = userService.findUserByUsername(userDTO.getUsername());
 
         //create entity
         User user = new User(userDTO);
@@ -29,6 +27,7 @@ public class AuthService {
             return jwtTokenService.generateToken(storedUser);
         }
 
-        throw new RuntimeException("invalid password");
+        log.error("Invalid password! " + user);
+        throw new BadCredentialsException("Invalid password");
     }
 }

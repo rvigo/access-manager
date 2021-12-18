@@ -15,18 +15,22 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(doNotUseGetters = true)
 @Document
 public class User implements UserDetails {
     @Id
     @EqualsAndHashCode.Include
     private UUID id;
+    @EqualsAndHashCode.Include
     private String username;
+    @EqualsAndHashCode.Include
+    @ToString.Exclude
     @Field("master_password")
     private String password;
+    @ToString.Exclude
     @BsonIgnore
     private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
 
