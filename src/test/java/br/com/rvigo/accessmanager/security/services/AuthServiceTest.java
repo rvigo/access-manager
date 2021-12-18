@@ -1,10 +1,9 @@
-package br.com.rvigo.accessmanager;
+package br.com.rvigo.accessmanager.security.services;
 
 import br.com.rvigo.accessmanager.dtos.UserDTO;
 import br.com.rvigo.accessmanager.entities.User;
 import br.com.rvigo.accessmanager.security.entities.Jwt;
-import br.com.rvigo.accessmanager.security.services.AuthService;
-import br.com.rvigo.accessmanager.security.services.JwtTokenService;
+import br.com.rvigo.accessmanager.security.exceptions.BadCredentialsException;
 import br.com.rvigo.accessmanager.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,23 +14,24 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class AuthServiceTest {
     @MockBean
     private UserService userService;
-    private JwtTokenService jwtTokenService;
     @MockBean
     private BCryptPasswordEncoder encoder;
+
     private AuthService userAuthService;
     private UserDTO userDTO;
     private User user;
-    private final UUID userId = UUID.fromString("791d37d4-535b-4f00-958f-4e0914606c6a");
+
+    private final UUID userId = UUID.randomUUID();
 
     @BeforeEach
     public void setUp() {
@@ -43,17 +43,27 @@ public class AuthServiceTest {
 
         user = new User(userDTO);
 
-        jwtTokenService = new JwtTokenService(30000L, key);
+        JwtTokenService jwtTokenService = new JwtTokenService(30000L, key);
         userAuthService = new AuthService(userService, jwtTokenService, encoder);
     }
 
     @Test
     public void shouldAuthenticateAnUser() {
-        Mockito.when(userService.findUserByUsername(Mockito.anyString())).thenReturn(Optional.ofNullable(user));
-        Mockito.when(encoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        when(userService.findUserByUsername(Mockito.anyString())).thenReturn(user);
+        when(encoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
         Jwt jwt = userAuthService.authenticateUser(userDTO);
 
         assertNotNull(jwt);
         assertNotNull(jwt.getJwtToken());
+    }
+
+    @Test
+    public void shouldThrowAnExceptionWhenPasswordDoesNotMatches() {
+        when(userService.findUserByUsername(Mockito.anyString())).thenReturn(user);
+        when(encoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+        BadCredentialsException exception = assertThrows(BadCredentialsException.class,
+                () -> userAuthService.authenticateUser(userDTO));
+
+        assertEquals("Invalid password", exception.getMessage());
     }
 }

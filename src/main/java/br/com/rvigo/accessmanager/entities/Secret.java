@@ -16,13 +16,15 @@ import java.util.UUID;
 @Document
 public class Secret {
     @Id
-    @EqualsAndHashCode.Include
     private UUID id = UUID.randomUUID();
     @Field("user_id")
     private UUID userId;
+    @EqualsAndHashCode.Include
     private String username;
+    @EqualsAndHashCode.Include
     private String password = "";
     private String salt;
+    @EqualsAndHashCode.Include
     private String url = "";
     private String note = "";
 
