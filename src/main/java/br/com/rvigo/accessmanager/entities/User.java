@@ -4,6 +4,7 @@ import br.com.rvigo.accessmanager.dtos.UserDTO;
 import lombok.*;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +33,7 @@ public class User implements UserDetails {
     private String password;
     @ToString.Exclude
     @BsonIgnore
+    @Transient
     private Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
 
     public User(UserDTO dto) {

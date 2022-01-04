@@ -47,6 +47,8 @@ public class SecretsServiceTest {
         this.secretDTO.setUserId(USER_ID);
         this.secretDTO.setUsername("testUsername");
         this.secretDTO.setPassword("testPassword");
+        this.secretDTO.setUrl("testUrl");
+        this.secretDTO.setNotes("notes");
         this.secret = new Secret(secretDTO);
         this.pageable = Pageable.ofSize(1);
         this.service = new SecretsService(secretsRepository);
@@ -77,7 +79,7 @@ public class SecretsServiceTest {
         when(secretsRepository.findAllSecretsByUserId(any(UUID.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(new Secret())));
 
-        Page<Secret> result = service.findAllByUserId(USER_ID, pageable);
+        Page<SecretDTO> result = service.findAllByUserId(USER_ID, pageable);
 
         assertEquals(1, result.getTotalPages());
     }

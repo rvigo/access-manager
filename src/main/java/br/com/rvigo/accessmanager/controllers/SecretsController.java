@@ -1,6 +1,5 @@
 package br.com.rvigo.accessmanager.controllers;
 
-import br.com.rvigo.accessmanager.entities.Secret;
 import br.com.rvigo.accessmanager.dtos.SecretDTO;
 import br.com.rvigo.accessmanager.services.SecretsService;
 import lombok.AllArgsConstructor;
@@ -16,32 +15,32 @@ import java.util.UUID;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.http.HttpStatus.CREATED;
 
-@RestController()
-@RequestMapping("/api")
+@RestController
+@RequestMapping(value = "/api/secret", produces = "application/json")
 @AllArgsConstructor
 public class SecretsController {
     private SecretsService secretsService;
 
-    @GetMapping("/get")
-    public Page<Secret> getAll(@PageableDefault(sort = "id", direction = ASC) Pageable pageable,
+    @GetMapping
+    public Page<SecretDTO> getAll(@PageableDefault(sort = "url", direction = ASC) Pageable pageable,
                                @RequestParam UUID userId) {
         return secretsService.findAllByUserId(userId, pageable);
     }
 
-    @PostMapping("/secret")
+    @PostMapping
     @ResponseStatus(CREATED)
     public SecretDTO createNew(@RequestBody SecretDTO secretDTO) {
         return secretsService.createSecret(secretDTO);
     }
 
-    @PutMapping("/secret")
+    @PatchMapping
     public SecretDTO update(@RequestBody SecretDTO secretDTO) {
         return secretsService.updateSecret(secretDTO);
     }
 
-    @DeleteMapping("/secret")
-    public ResponseEntity<SecretDTO> delete(@RequestParam UUID secretId) {
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam UUID secretId) {
         secretsService.deleteSecret(secretId);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 }

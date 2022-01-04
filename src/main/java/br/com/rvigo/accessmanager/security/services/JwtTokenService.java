@@ -52,7 +52,7 @@ public class JwtTokenService {
 
         String token = Jwts.builder()
                 .setClaims(claims)
-                .setAudience(AUDIENCE)
+                //.setAudience(AUDIENCE)
                 .setIssuer(ISSUER)
                 .setIssuedAt(new Date(currentTimeMillis()))
                 .setExpiration(new Date(currentTimeMillis() + tokenExpiration))

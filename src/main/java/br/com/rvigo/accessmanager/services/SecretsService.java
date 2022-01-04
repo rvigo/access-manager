@@ -7,10 +7,12 @@ import br.com.rvigo.accessmanager.security.exceptions.NoSuchSecretException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,16 +20,15 @@ import java.util.UUID;
 public class SecretsService {
     private SecretsRepository secretsRepository;
 
-    public Page<Secret> findAllByUserId(UUID userId, Pageable pageable) {
-        return secretsRepository.findAllSecretsByUserId(userId, pageable);
+    public Page<SecretDTO> findAllByUserId(UUID userId, Pageable pageable) {
+        return new PageImpl<SecretDTO>(secretsRepository.findAllSecretsByUserId(userId, pageable).stream().map(SecretDTO::new).collect(Collectors.toList()));
     }
 
     public SecretDTO createSecret(SecretDTO secretDTO) {
         Secret secret = new Secret(secretDTO);
         secret.setId(UUID.randomUUID());
-        secret.setSalt(UUID.randomUUID().toString());
         Secret response = secretsRepository.save(secret);
-        log.info("The secret was saved");
+        log.info(String.format("The secret %s was saved", secret));
         return new SecretDTO(response);
     }
 
@@ -41,12 +42,13 @@ public class SecretsService {
         Secret currentSecret = secretsRepository.findById(incomingSecret.getId())
                 .orElseThrow(NoSuchSecretException::new);
 
-        if (currentSecret.equals(incomingSecret)) {
-            log.warn("No changes! Nothing to do");
-            return new SecretDTO(incomingSecret);
-        } else {
-            Secret updated = secretsRepository.save(incomingSecret);
-            return new SecretDTO(updated);
+            if(incomingSecret.canUpdate(currentSecret)) {
+                currentSecret.update(incomingSecret);
+                Secret updated = secretsRepository.save(currentSecret);
+                log.info(String.format("The secret was updated to %s", updated));
+                return new SecretDTO(updated);
+            }
+            log.info("The incoming secret has no changes. Nothing to do");
+            return secretDTO;
         }
-    }
 }

@@ -23,6 +23,7 @@ public class AuthService {
 
         //create entity
         User user = new User(userDTO);
+
         if (encoder.matches(user.getPassword(), storedUser.getPassword())) {
             return jwtTokenService.generateToken(storedUser);
         }

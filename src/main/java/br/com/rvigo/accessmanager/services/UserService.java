@@ -28,9 +28,11 @@ public class UserService {
 
     //password is encrypted by client
     public UserDTO createNewUser(UserDTO userDTO) {
+        userDTO.setId(UUID.randomUUID());
         User createdUser = userRepository.save(new User(userDTO));
         log.info(format("User %s was created", createdUser.getUsername()));
-        return new UserDTO(createdUser);
+
+        return userDTO;
     }
 
     public UserDTO updateUser(UserDTO userDTO) {
@@ -40,11 +42,15 @@ public class UserService {
 
         if (currentUser.equals(incomingUser)) {
             log.warn("No changes! Nothing to do");
-            return new UserDTO(incomingUser);
+          return userDTO;
         } else {
+
             User updated = userRepository.save(incomingUser);
             log.info(format("User %s was updated", updated.getUsername()));
-            return new UserDTO(updated);
+            userDTO.setId(updated.getId());
+            userDTO.setUsername(updated.getUsername());
+            userDTO.setPassword(updated.getPassword());
+            return new UserDTO(updated.getId(), updated.getUsername(), updated.getPassword());
         }
     }
 

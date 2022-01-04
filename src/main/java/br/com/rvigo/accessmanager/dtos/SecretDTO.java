@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SecretDTO  {
     private UUID id;
-
     @JsonSerialize(using= UUIDSerializer.class)
     @JsonDeserialize(using= UUIDDeserializer.class)
     @JsonProperty("user_id")
@@ -26,7 +25,7 @@ public class SecretDTO  {
     private String password;
     private String salt;
     private String url;
-    private String note;
+    private String notes;
 
     public SecretDTO(Secret secret){
         this.id = secret.getId();
@@ -35,6 +34,6 @@ public class SecretDTO  {
         this.password = secret.getPassword();
         this.salt = secret.getSalt();
         this.url = secret.getUrl();
-        this.note = secret.getNote();
+        this.notes = secret.getNotes();
     }
 }

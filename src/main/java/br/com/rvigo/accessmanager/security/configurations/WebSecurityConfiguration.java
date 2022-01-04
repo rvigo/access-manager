@@ -32,7 +32,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth")
+                .antMatchers("/auth", "/api/users")
                 .permitAll()
                 .antMatchers(API_ROUTE)
                 .authenticated()
