@@ -23,7 +23,7 @@ public class SecretsController {
 
     @GetMapping
     public Page<SecretDTO> getAll(@PageableDefault(sort = "url", direction = ASC) Pageable pageable,
-                               @RequestParam UUID userId) {
+                               @RequestParam(name="user_id") UUID userId) {
         return secretsService.findAllByUserId(userId, pageable);
     }
 

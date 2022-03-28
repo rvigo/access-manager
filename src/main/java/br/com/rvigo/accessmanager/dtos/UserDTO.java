@@ -21,6 +21,7 @@ public class UserDTO {
     @JsonProperty("_id")
     private UUID id;
     private String username;
+    @JsonProperty("master_password")
     private String password;
 
     public UserDTO(User user) {
